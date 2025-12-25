@@ -52,9 +52,9 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
       .map(([rating, count]) => ({
         rating: `${rating}分`,
         count,
-        fill: Number(rating) >= 8 ? 'hsl(var(--anime-green))' : 
-              Number(rating) >= 6 ? 'hsl(var(--anime-gold))' : 
-              'hsl(var(--anime-red))',
+        fill: Number(rating) >= 8 ? 'hsl(142 70% 55%)' : 
+              Number(rating) >= 6 ? 'hsl(45 93% 58%)' : 
+              'hsl(0 75% 55%)',
       }));
   }, [collections]);
 
