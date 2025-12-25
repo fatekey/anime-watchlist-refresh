@@ -64,10 +64,10 @@ export function AnimeCard({ collection, index, onClick }: AnimeCardProps) {
           <h3 className="line-clamp-2 text-sm font-medium leading-tight text-foreground transition-colors group-hover:text-primary">
             {displayName}
           </h3>
-          {subject.air_date && (
+          {subject.date && (
             <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3" />
-              {subject.air_date}
+              {subject.date}
             </div>
           )}
         </div>

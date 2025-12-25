@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchAllUserCollections, calculateStats } from '@/services/bangumiService';
+import { fetchAllUserCollections, calculateStats, fetchUserInfo, UserInfo } from '@/services/bangumiService';
 import { UserCollection, BangumiStats, CollectionType, themes, Theme } from '@/types/bangumi';
 
 export function useBangumi(userId: string | null) {
   const {
     data: collections = [],
-    isLoading,
-    error,
+    isLoading: isLoadingCollections,
+    error: collectionsError,
     refetch,
   } = useQuery({
     queryKey: ['bangumi-collections', userId],
@@ -16,13 +16,24 @@ export function useBangumi(userId: string | null) {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  const {
+    data: userInfo,
+    isLoading: isLoadingUser,
+  } = useQuery({
+    queryKey: ['bangumi-user', userId],
+    queryFn: () => (userId ? fetchUserInfo(userId) : Promise.resolve(null)),
+    enabled: !!userId,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+
   const stats = collections.length > 0 ? calculateStats(collections) : null;
 
   return {
     collections,
     stats,
-    isLoading,
-    error,
+    userInfo,
+    isLoading: isLoadingCollections, // Only wait for collections, not user info
+    error: collectionsError,
     refetch,
   };
 }

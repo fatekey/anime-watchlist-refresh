@@ -77,10 +77,10 @@ export function AnimeDetailModal({ collection, open, onClose }: AnimeDetailModal
 
               {/* Meta Info */}
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                {subject.air_date && (
+                {subject.date && (
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
-                    {subject.air_date}
+                    {subject.date}
                   </div>
                 )}
                 {subject.eps_count && (

@@ -13,8 +13,11 @@ export interface BangumiSubject {
     grid?: string;
   };
   summary?: string;
-  air_date?: string;
+  short_summary?: string;
+  date?: string;  // API returns 'date' not 'air_date'
+  eps?: number;
   eps_count?: number;
+  score?: number;
   rating?: {
     score: number;
     total: number;
@@ -27,6 +30,7 @@ export interface BangumiSubject {
     on_hold: number;
     dropped: number;
   };
+  collection_total?: number;
   tags?: Array<{
     name: string;
     count: number;
