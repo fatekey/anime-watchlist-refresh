@@ -1,4 +1,4 @@
-import { BangumiStats, CollectionType, CollectionTypeLabels, CollectionTypeColors } from '@/types/bangumi';
+import { BangumiStats, CollectionType, CollectionTypeLabels, CollectionTypeColors, UserCollection } from '@/types/bangumi';
 import { motion } from 'framer-motion';
 import {
   BarChart,
@@ -11,12 +11,14 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import { useMemo } from 'react';
 
 interface StatsChartsProps {
   stats: BangumiStats;
+  collections: UserCollection[];
 }
 
-export function StatsCharts({ stats }: StatsChartsProps) {
+export function StatsCharts({ stats, collections }: StatsChartsProps) {
   // Prepare data for collection type pie chart
   const typeData = Object.entries(stats.byType)
     .map(([type, count]) => ({
@@ -26,14 +28,31 @@ export function StatsCharts({ stats }: StatsChartsProps) {
     }))
     .filter(d => d.value > 0);
 
-  // Prepare data for yearly bar chart
+  // Prepare data for yearly bar chart - show ALL years
   const yearData = Object.entries(stats.byYear)
     .sort((a, b) => a[0].localeCompare(b[0]))
-    .slice(-10) // Last 10 years
     .map(([year, count]) => ({
       year,
       count,
     }));
+
+  // Calculate tag preferences from high-rated anime (7+)
+  const tagCloud = useMemo(() => {
+    const tagCounts: Record<string, number> = {};
+    
+    collections
+      .filter(c => c.rate && c.rate >= 7)
+      .forEach(c => {
+        c.subject.tags?.forEach(tag => {
+          tagCounts[tag.name] = (tagCounts[tag.name] || 0) + tag.count;
+        });
+      });
+
+    return Object.entries(tagCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([name, count]) => ({ name, count }));
+  }, [collections]);
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -120,45 +139,98 @@ export function StatsCharts({ stats }: StatsChartsProps) {
         </div>
       </motion.div>
 
-      {/* Yearly Distribution */}
+      {/* Yearly Distribution - Full width with horizontal scroll */}
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
-        className="glass glass-border rounded-xl p-6"
+        className="col-span-full glass glass-border rounded-xl p-6"
       >
         <h3 className="mb-4 text-lg font-semibold">年份分布</h3>
-        <div className="h-[250px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={yearData}>
-              <XAxis
-                dataKey="year"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 12 }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 12 }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'hsl(230 20% 12%)',
-                  border: '1px solid hsl(230 20% 18%)',
-                  borderRadius: '8px',
-                }}
-                labelStyle={{ color: 'hsl(210 40% 98%)' }}
-              />
-              <Bar
-                dataKey="count"
-                fill="hsl(340 70% 55%)"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="h-[200px] overflow-x-auto">
+          <div style={{ minWidth: Math.max(yearData.length * 50, 400) + 'px', height: '100%' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={yearData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+                <XAxis
+                  dataKey="year"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: 'hsl(215 20% 60%)', fontSize: 11 }}
+                  interval={0}
+                  angle={-45}
+                  textAnchor="end"
+                  height={50}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: 'hsl(215 20% 60%)', fontSize: 12 }}
+                  width={30}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'hsl(230 20% 12%)',
+                    border: '1px solid hsl(230 20% 18%)',
+                    borderRadius: '8px',
+                  }}
+                  labelStyle={{ color: 'hsl(210 40% 98%)' }}
+                  formatter={(value: number) => [`${value} 部`, '数量']}
+                />
+                <Bar
+                  dataKey="count"
+                  fill="hsl(var(--primary))"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </motion.div>
+
+      {/* Tag Cloud - Preference Analysis */}
+      {tagCloud.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+          className="col-span-full glass glass-border rounded-xl p-6"
+        >
+          <h3 className="mb-6 text-lg font-semibold">喜好分析</h3>
+          <p className="text-sm text-muted-foreground mb-6">基于您评分 7 分及以上的动画标签</p>
+          <div className="flex flex-wrap justify-center items-center gap-4 min-h-[120px]">
+            {tagCloud.map((tag, index) => {
+              // Calculate size based on ranking (1st = largest)
+              const sizes = ['text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg', 'text-base'];
+              const colors = [
+                'text-primary',
+                'text-anime-cyan',
+                'text-anime-purple',
+                'text-anime-gold',
+                'text-anime-green',
+                'text-anime-blue',
+              ];
+              const opacities = ['opacity-100', 'opacity-95', 'opacity-85', 'opacity-75', 'opacity-65', 'opacity-55'];
+              
+              return (
+                <motion.span
+                  key={tag.name}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 * index }}
+                  className={`
+                    ${sizes[index]} ${colors[index]} ${opacities[index]}
+                    font-bold cursor-default transition-all duration-300
+                    hover:scale-110 hover:opacity-100
+                  `}
+                  title={`${tag.name}: ${tag.count}`}
+                >
+                  {tag.name}
+                </motion.span>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
