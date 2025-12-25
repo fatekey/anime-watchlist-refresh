@@ -4,6 +4,18 @@ import { UserCollection, BangumiSubject, CollectionType, BangumiStats } from '@/
 
 const BASE_URL = 'https://api.bgm.tv';
 
+export interface UserInfo {
+  id: number;
+  username: string;
+  nickname: string;
+  avatar?: {
+    large?: string;
+    medium?: string;
+    small?: string;
+  };
+  sign?: string;
+}
+
 export interface FetchCollectionsOptions {
   userId: string;
   subjectType?: number; // 2 = anime
@@ -88,6 +100,21 @@ export async function fetchSubjectDetails(subjectId: number): Promise<BangumiSub
   return response.json();
 }
 
+export async function fetchUserInfo(userId: string): Promise<UserInfo> {
+  const response = await fetch(`${BASE_URL}/v0/users/${userId}`, {
+    headers: {
+      'User-Agent': 'BangumiTracker/1.0',
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user info: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 export function calculateStats(collections: UserCollection[]): BangumiStats {
   const byType: Record<CollectionType, number> = {
     [CollectionType.WISH]: 0,
@@ -104,7 +131,8 @@ export function calculateStats(collections: UserCollection[]): BangumiStats {
   collections.forEach(collection => {
     byType[collection.type]++;
 
-    const airDate = collection.subject.air_date;
+    // API returns 'date' not 'air_date'
+    const airDate = collection.subject.date;
     if (airDate) {
       const year = airDate.split('-')[0];
       byYear[year] = (byYear[year] || 0) + 1;

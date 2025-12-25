@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tv2, BarChart3, RefreshCw, Github, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -12,12 +12,15 @@ import { FilterBar } from '@/components/FilterBar';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { AnimeDetailModal } from '@/components/AnimeDetailModal';
 import { UserCollection } from '@/types/bangumi';
+import defaultAvatar from '@/assets/default-avatar.png';
+
+const DEFAULT_USER_ID = '605976';
 
 const Index = () => {
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(DEFAULT_USER_ID);
   const [selectedCollection, setSelectedCollection] = useState<UserCollection | null>(null);
 
-  const { collections, stats, isLoading, error, refetch } = useBangumi(userId);
+  const { collections, stats, userInfo, isLoading, error, refetch } = useBangumi(userId);
   const { currentTheme, themes, applyTheme } = useTheme();
   const {
     filteredCollections,
@@ -140,11 +143,13 @@ const Index = () => {
               {/* User Info Bar */}
               <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-lg font-bold">
-                    {userId.charAt(0).toUpperCase()}
-                  </div>
+                  <img 
+                    src={defaultAvatar} 
+                    alt="用户头像" 
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
                   <div>
-                    <p className="font-medium">{userId}</p>
+                    <p className="font-medium">{userInfo?.nickname || userInfo?.username || userId}</p>
                     <p className="text-sm text-muted-foreground">
                       {collections.length} 部番剧
                     </p>
