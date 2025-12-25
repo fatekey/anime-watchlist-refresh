@@ -59,7 +59,7 @@ export function useTheme() {
 export function useCollectionFilter(collections: UserCollection[]) {
   const [filterType, setFilterType] = useState<CollectionType | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'date' | 'rating' | 'name'>('date');
+  const [sortBy, setSortBy] = useState<'date' | 'rating' | 'name'>('rating');
 
   const filteredCollections = collections
     .filter(c => {
