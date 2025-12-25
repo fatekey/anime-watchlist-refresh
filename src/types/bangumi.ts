@@ -89,6 +89,10 @@ export interface Theme {
     primary: string;
     accent: string;
     background: string;
+    card: string;
+    muted: string;
+    border: string;
+    ring: string;
   };
 }
 
@@ -99,34 +103,63 @@ export const themes: Theme[] = [
     colors: {
       primary: '340 70% 55%',
       accent: '185 80% 50%',
-      background: '230 25% 7%',
+      background: '270 20% 8%',
+      card: '270 15% 12%',
+      muted: '270 15% 18%',
+      border: '270 15% 20%',
+      ring: '340 70% 55%',
     },
   },
   {
     id: 'ocean',
     name: '海洋',
     colors: {
-      primary: '210 80% 55%',
-      accent: '185 80% 50%',
-      background: '220 30% 8%',
+      primary: '200 90% 50%',
+      accent: '170 80% 45%',
+      background: '210 40% 6%',
+      card: '210 35% 10%',
+      muted: '210 30% 16%',
+      border: '210 25% 20%',
+      ring: '200 90% 50%',
     },
   },
   {
     id: 'sunset',
     name: '落日',
     colors: {
-      primary: '25 90% 55%',
-      accent: '45 90% 55%',
-      background: '15 20% 8%',
+      primary: '20 95% 55%',
+      accent: '45 100% 50%',
+      background: '10 30% 6%',
+      card: '10 25% 10%',
+      muted: '10 20% 16%',
+      border: '10 20% 22%',
+      ring: '20 95% 55%',
     },
   },
   {
     id: 'forest',
     name: '森林',
     colors: {
-      primary: '150 60% 45%',
-      accent: '120 50% 40%',
-      background: '160 20% 7%',
+      primary: '140 70% 40%',
+      accent: '80 60% 45%',
+      background: '150 25% 5%',
+      card: '150 20% 9%',
+      muted: '150 15% 15%',
+      border: '150 15% 18%',
+      ring: '140 70% 40%',
+    },
+  },
+  {
+    id: 'midnight',
+    name: '午夜',
+    colors: {
+      primary: '260 85% 65%',
+      accent: '290 70% 55%',
+      background: '250 30% 6%',
+      card: '250 25% 10%',
+      muted: '250 20% 16%',
+      border: '250 20% 20%',
+      ring: '260 85% 65%',
     },
   },
 ];
