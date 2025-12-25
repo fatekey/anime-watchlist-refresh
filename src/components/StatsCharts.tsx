@@ -36,6 +36,27 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
       count,
     }));
 
+  // Calculate rating distribution
+  const ratingData = useMemo(() => {
+    const ratingCounts: Record<number, number> = {};
+    for (let i = 1; i <= 10; i++) {
+      ratingCounts[i] = 0;
+    }
+    collections.forEach(c => {
+      if (c.rate && c.rate >= 1 && c.rate <= 10) {
+        ratingCounts[c.rate]++;
+      }
+    });
+    return Object.entries(ratingCounts)
+      .map(([rating, count]) => ({
+        rating: `${rating}分`,
+        count,
+        fill: Number(rating) >= 8 ? 'hsl(var(--anime-green))' : 
+              Number(rating) >= 6 ? 'hsl(var(--anime-gold))' : 
+              'hsl(var(--anime-red))',
+      }));
+  }, [collections]);
+
   // Calculate tag preferences from high-rated anime (7+)
   // Take top 6 tags from each anime, then aggregate
   const tagCloud = useMemo(() => {
@@ -106,15 +127,15 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         className="glass glass-border rounded-xl p-6"
       >
         <h3 className="mb-4 text-lg font-semibold">收藏分布</h3>
-        <div className="h-[250px]">
+        <div className="h-[200px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={typeData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={90}
+                innerRadius={50}
+                outerRadius={75}
                 paddingAngle={4}
                 dataKey="value"
               >
@@ -133,11 +154,11 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="mt-4 flex flex-wrap justify-center gap-3">
+        <div className="mt-3 flex flex-wrap justify-center gap-2">
           {typeData.map(item => (
-            <div key={item.name} className="flex items-center gap-2 text-sm">
+            <div key={item.name} className="flex items-center gap-1.5 text-xs">
               <div
-                className="h-3 w-3 rounded-full"
+                className="h-2.5 w-2.5 rounded-full"
                 style={{ backgroundColor: item.color }}
               />
               <span className="text-muted-foreground">
@@ -145,6 +166,65 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
               </span>
             </div>
           ))}
+        </div>
+      </motion.div>
+
+      {/* Rating Distribution */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, delay: 0.25 }}
+        className="glass glass-border rounded-xl p-6"
+      >
+        <h3 className="mb-4 text-lg font-semibold">评分分布</h3>
+        <div className="h-[200px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={ratingData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
+              <XAxis
+                dataKey="rating"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 11 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 11 }}
+                width={30}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'hsl(230 20% 12%)',
+                  border: '1px solid hsl(230 20% 18%)',
+                  borderRadius: '8px',
+                }}
+                labelStyle={{ color: 'hsl(210 40% 98%)' }}
+                formatter={(value: number) => [`${value} 部`, '数量']}
+              />
+              <Bar
+                dataKey="count"
+                radius={[4, 4, 0, 0]}
+              >
+                {ratingData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="mt-3 flex justify-center gap-3 text-xs">
+          <div className="flex items-center gap-1.5">
+            <div className="h-2.5 w-2.5 rounded-full bg-anime-green" />
+            <span className="text-muted-foreground">8-10分</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="h-2.5 w-2.5 rounded-full bg-anime-gold" />
+            <span className="text-muted-foreground">6-7分</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="h-2.5 w-2.5 rounded-full bg-anime-red" />
+            <span className="text-muted-foreground">1-5分</span>
+          </div>
         </div>
       </motion.div>
 
@@ -156,7 +236,8 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         className="col-span-full glass glass-border rounded-xl p-6"
       >
         <h3 className="mb-4 text-lg font-semibold">年份分布</h3>
-        <div className="h-[200px] overflow-x-auto">
+        <div className="h-[200px] overflow-x-auto" style={{ direction: 'rtl' }}>
+          <div style={{ direction: 'ltr', minWidth: Math.max(yearData.length * 50, 400) + 'px', height: '100%' }}>
           <div style={{ minWidth: Math.max(yearData.length * 50, 400) + 'px', height: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={yearData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
@@ -193,6 +274,7 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
               </BarChart>
             </ResponsiveContainer>
           </div>
+        </div>
         </div>
       </motion.div>
 
