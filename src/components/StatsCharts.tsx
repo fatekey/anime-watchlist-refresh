@@ -89,13 +89,13 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
   ];
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
       {/* Summary Cards */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="col-span-full grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className="col-span-full grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
       >
         <StatCard
           label="总计番剧"
@@ -336,13 +336,13 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon, gradient }: StatCardProps) {
   return (
-    <div className={`glass glass-border rounded-xl bg-gradient-to-br ${gradient} p-5`}>
+    <div className={`glass glass-border rounded-xl bg-gradient-to-br ${gradient} p-3 sm:p-5`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className="mt-1 text-3xl font-bold tracking-tight">{value}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">{label}</p>
+          <p className="mt-1 text-xl sm:text-3xl font-bold tracking-tight">{value}</p>
         </div>
-        <span className="text-3xl">{icon}</span>
+        <span className="text-2xl sm:text-3xl">{icon}</span>
       </div>
     </div>
   );
