@@ -128,18 +128,18 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
-        className="glass glass-border rounded-xl p-6"
+        className="glass glass-border rounded-xl p-4 sm:p-6"
       >
-        <h3 className="mb-4 text-lg font-semibold">收藏分布</h3>
-        <div className="h-[200px]">
+        <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">收藏分布</h3>
+        <div className="h-[160px] sm:h-[200px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={typeData}
                 cx="50%"
                 cy="50%"
-                innerRadius={50}
-                outerRadius={75}
+                innerRadius={35}
+                outerRadius={55}
                 paddingAngle={4}
                 dataKey="value"
               >
@@ -160,11 +160,11 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="mt-3 flex flex-wrap justify-center gap-2">
+        <div className="mt-2 sm:mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1 sm:gap-2">
           {typeData.map(item => (
-            <div key={item.name} className="flex items-center gap-1.5 text-xs">
+            <div key={item.name} className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs">
               <div
-                className="h-2.5 w-2.5 rounded-full"
+                className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: item.color }}
               />
               <span className="text-muted-foreground">
@@ -180,23 +180,24 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: 0.25 }}
-        className="glass glass-border rounded-xl p-6"
+        className="glass glass-border rounded-xl p-4 sm:p-6"
       >
-        <h3 className="mb-4 text-lg font-semibold">评分分布</h3>
-        <div className="h-[200px]">
+        <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">评分分布</h3>
+        <div className="h-[160px] sm:h-[200px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={ratingData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
+            <BarChart data={ratingData} margin={{ top: 10, right: 5, left: -15, bottom: 5 }}>
               <XAxis
                 dataKey="rating"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 11 }}
+                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 9 }}
+                interval={0}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 11 }}
-                width={30}
+                tick={{ fill: 'hsl(215 20% 60%)', fontSize: 10 }}
+                width={25}
               />
               <Tooltip
                 contentStyle={{
@@ -220,17 +221,17 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="mt-3 flex justify-center gap-3 text-xs">
-          <div className="flex items-center gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full bg-anime-green" />
+        <div className="mt-2 sm:mt-3 flex justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs">
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            <div className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-anime-green" />
             <span className="text-muted-foreground">8-10分</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full bg-anime-gold" />
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            <div className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-anime-gold" />
             <span className="text-muted-foreground">6-7分</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full bg-anime-red" />
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            <div className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full" style={{ backgroundColor: 'hsl(0 75% 55%)' }} />
             <span className="text-muted-foreground">1-5分</span>
           </div>
         </div>
@@ -241,28 +242,28 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
-        className="col-span-full glass glass-border rounded-xl p-6"
+        className="col-span-full glass glass-border rounded-xl p-4 sm:p-6"
       >
-        <h3 className="mb-4 text-lg font-semibold">年份分布</h3>
-        <div className="h-[200px] overflow-x-auto" style={{ direction: 'rtl' }}>
-          <div style={{ direction: 'ltr', minWidth: Math.max(yearData.length * 50, 400) + 'px', height: '100%' }}>
+        <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">年份分布</h3>
+        <div className="h-[160px] sm:h-[200px] overflow-x-auto" style={{ direction: 'rtl' }}>
+          <div style={{ direction: 'ltr', minWidth: Math.max(yearData.length * 40, 300) + 'px', height: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={yearData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+              <BarChart data={yearData} margin={{ top: 10, right: 15, left: -5, bottom: 5 }}>
                 <XAxis
                   dataKey="year"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: 'hsl(215 20% 60%)', fontSize: 11 }}
+                  tick={{ fill: 'hsl(215 20% 60%)', fontSize: 9 }}
                   interval={0}
                   angle={-45}
                   textAnchor="end"
-                  height={50}
+                  height={40}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: 'hsl(215 20% 60%)', fontSize: 12 }}
-                  width={30}
+                  tick={{ fill: 'hsl(215 20% 60%)', fontSize: 10 }}
+                  width={25}
                 />
                 <Tooltip
                   contentStyle={{
@@ -290,14 +291,14 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
-          className="col-span-full glass glass-border rounded-xl p-6 overflow-hidden"
+          className="col-span-full glass glass-border rounded-xl p-4 sm:p-6 overflow-hidden"
         >
-          <h3 className="mb-2 text-lg font-semibold">喜好分析</h3>
-          <p className="text-sm text-muted-foreground mb-4">基于评分 7 分及以上动画的热门标签</p>
-          <div className="h-[180px]">
+          <h3 className="mb-1 sm:mb-2 text-base sm:text-lg font-semibold">喜好分析</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">基于评分 7 分及以上动画的热门标签</p>
+          <div className="h-[140px] sm:h-[180px] overflow-hidden">
             <TagCloud
-              minSize={12}
-              maxSize={28}
+              minSize={10}
+              maxSize={22}
               tags={tagCloudData}
               colorOptions={{
                 luminosity: 'light',
@@ -309,8 +310,8 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
                   style={{
                     fontSize: size,
                     color: tagColors[Math.floor(Math.random() * tagColors.length)],
-                    margin: '3px',
-                    padding: '2px 4px',
+                    margin: '2px',
+                    padding: '1px 3px',
                     display: 'inline-block',
                     cursor: 'default',
                   }}
