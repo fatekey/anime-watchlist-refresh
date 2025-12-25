@@ -12,6 +12,7 @@ import {
   Cell,
 } from 'recharts';
 import { useMemo } from 'react';
+import { TagCloud } from 'react-tagcloud';
 
 interface StatsChartsProps {
   stats: BangumiStats;
@@ -59,7 +60,7 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
 
   // Calculate tag preferences from high-rated anime (7+)
   // Take top 6 tags from each anime, then aggregate
-  const tagCloud = useMemo(() => {
+  const tagCloudData = useMemo(() => {
     const tagCounts: Record<string, number> = {};
     
     collections
@@ -72,17 +73,20 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         });
       });
 
-    const sorted = Object.entries(tagCounts)
+    return Object.entries(tagCounts)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 50); // Show up to 50 tags
-    
-    // Shuffle for more natural cloud layout
-    const shuffled = [...sorted].sort(() => Math.random() - 0.5);
-    return shuffled.map(([name, count]) => ({ name, count }));
+      .slice(0, 50)
+      .map(([value, count]) => ({ value, count }));
   }, [collections]);
 
-  // Calculate max count for sizing
-  const maxTagCount = tagCloud.length > 0 ? tagCloud[0].count : 1;
+  const tagColors = [
+    'hsl(262 83% 70%)',  // primary purple
+    'hsl(187 80% 60%)',  // cyan
+    'hsl(280 70% 65%)',  // purple
+    'hsl(45 93% 58%)',   // gold
+    'hsl(142 70% 55%)',  // green
+    'hsl(217 91% 65%)',  // blue
+  ];
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -148,8 +152,10 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
                   backgroundColor: 'hsl(230 20% 12%)',
                   border: '1px solid hsl(230 20% 18%)',
                   borderRadius: '8px',
+                  color: 'hsl(210 40% 98%)',
                 }}
-                labelStyle={{ color: 'hsl(210 40% 98%)' }}
+                itemStyle={{ color: 'hsl(210 40% 98%)' }}
+                formatter={(value: number, name: string) => [`${value} 部`, name]}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -197,7 +203,9 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
                   backgroundColor: 'hsl(230 20% 12%)',
                   border: '1px solid hsl(230 20% 18%)',
                   borderRadius: '8px',
+                  color: 'hsl(210 40% 98%)',
                 }}
+                itemStyle={{ color: 'hsl(210 40% 98%)' }}
                 labelStyle={{ color: 'hsl(210 40% 98%)' }}
                 formatter={(value: number) => [`${value} 部`, '数量']}
               />
@@ -238,7 +246,6 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         <h3 className="mb-4 text-lg font-semibold">年份分布</h3>
         <div className="h-[200px] overflow-x-auto" style={{ direction: 'rtl' }}>
           <div style={{ direction: 'ltr', minWidth: Math.max(yearData.length * 50, 400) + 'px', height: '100%' }}>
-          <div style={{ minWidth: Math.max(yearData.length * 50, 400) + 'px', height: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={yearData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
                 <XAxis
@@ -275,11 +282,10 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
             </ResponsiveContainer>
           </div>
         </div>
-        </div>
       </motion.div>
 
       {/* Tag Cloud - Preference Analysis */}
-      {tagCloud.length > 0 && (
+      {tagCloudData.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -288,48 +294,32 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         >
           <h3 className="mb-2 text-lg font-semibold">喜好分析</h3>
           <p className="text-sm text-muted-foreground mb-4">基于评分 7 分及以上动画的热门标签</p>
-          <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5">
-            {tagCloud.map((tag, index) => {
-              // Calculate size based on count relative to max
-              const ratio = tag.count / maxTagCount;
-              const fontSize = 0.7 + ratio * 0.8; // 0.7rem to 1.5rem (smaller range)
-              
-              // Assign colors based on frequency tier
-              const colors = [
-                'hsl(var(--primary))',
-                'hsl(var(--anime-cyan))',
-                'hsl(var(--anime-purple))',
-                'hsl(var(--anime-gold))',
-                'hsl(var(--anime-green))',
-                'hsl(var(--anime-blue))',
-              ];
-              const color = colors[index % colors.length];
-              
-              return (
-                <motion.span
-                  key={tag.name}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.01 * index,
+          <div className="h-[180px]">
+            <TagCloud
+              minSize={12}
+              maxSize={28}
+              tags={tagCloudData}
+              colorOptions={{
+                luminosity: 'light',
+                hue: 'purple',
+              }}
+              renderer={(tag, size, color) => (
+                <span
+                  key={tag.value}
+                  style={{
+                    fontSize: size,
+                    color: tagColors[Math.floor(Math.random() * tagColors.length)],
+                    margin: '3px',
+                    padding: '2px 4px',
+                    display: 'inline-block',
+                    cursor: 'default',
                   }}
-                  whileHover={{ 
-                    scale: 1.15, 
-                    transition: { duration: 0.15 }
-                  }}
-                  className="cursor-default font-medium px-1"
-                  style={{ 
-                    fontSize: `${fontSize}rem`,
-                    color,
-                    opacity: 0.65 + ratio * 0.35,
-                  }}
-                  title={`${tag.name}: 出现 ${tag.count} 次`}
+                  title={`${tag.value}: 出现 ${tag.count} 次`}
                 >
-                  {tag.name}
-                </motion.span>
-              );
-            })}
+                  {tag.value}
+                </span>
+              )}
+            />
           </div>
         </motion.div>
       )}
