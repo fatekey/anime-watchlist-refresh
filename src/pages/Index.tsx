@@ -215,7 +215,7 @@ const Index = () => {
                   </TabsContent>
 
                   <TabsContent value="stats">
-                    {stats && <StatsCharts stats={stats} />}
+                    {stats && <StatsCharts stats={stats} collections={collections} />}
                   </TabsContent>
                 </Tabs>
               )}
