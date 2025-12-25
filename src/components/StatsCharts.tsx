@@ -37,22 +37,28 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
     }));
 
   // Calculate tag preferences from high-rated anime (7+)
+  // Take top 6 tags from each anime, then aggregate
   const tagCloud = useMemo(() => {
     const tagCounts: Record<string, number> = {};
     
     collections
       .filter(c => c.rate && c.rate >= 7)
       .forEach(c => {
-        c.subject.tags?.forEach(tag => {
-          tagCounts[tag.name] = (tagCounts[tag.name] || 0) + tag.count;
+        // Take only top 6 tags from each anime
+        const topTags = c.subject.tags?.slice(0, 6) || [];
+        topTags.forEach(tag => {
+          tagCounts[tag.name] = (tagCounts[tag.name] || 0) + 1;
         });
       });
 
     return Object.entries(tagCounts)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 6)
+      .slice(0, 30) // Show up to 30 tags
       .map(([name, count]) => ({ name, count }));
   }, [collections]);
+
+  // Calculate max count for sizing
+  const maxTagCount = tagCloud.length > 0 ? tagCloud[0].count : 1;
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -195,12 +201,19 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
           transition={{ duration: 0.4, delay: 0.4 }}
           className="col-span-full glass glass-border rounded-xl p-6"
         >
-          <h3 className="mb-6 text-lg font-semibold">喜好分析</h3>
-          <p className="text-sm text-muted-foreground mb-6">基于您评分 7 分及以上的动画标签</p>
-          <div className="flex flex-wrap justify-center items-center gap-4 min-h-[120px]">
+          <h3 className="mb-2 text-lg font-semibold">喜好分析</h3>
+          <p className="text-sm text-muted-foreground mb-6">基于评分 7 分及以上动画的热门标签</p>
+          <div className="flex flex-wrap justify-center items-center gap-3 min-h-[150px]">
             {tagCloud.map((tag, index) => {
-              // Calculate size based on ranking (1st = largest)
-              const sizes = ['text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg', 'text-base'];
+              // Calculate size based on count relative to max
+              const ratio = tag.count / maxTagCount;
+              const sizeClass = ratio > 0.8 ? 'text-3xl' : 
+                               ratio > 0.6 ? 'text-2xl' :
+                               ratio > 0.4 ? 'text-xl' :
+                               ratio > 0.25 ? 'text-lg' :
+                               ratio > 0.15 ? 'text-base' : 'text-sm';
+              
+              // Cycle through colors
               const colors = [
                 'text-primary',
                 'text-anime-cyan',
@@ -209,20 +222,22 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
                 'text-anime-green',
                 'text-anime-blue',
               ];
-              const opacities = ['opacity-100', 'opacity-95', 'opacity-85', 'opacity-75', 'opacity-65', 'opacity-55'];
+              const colorClass = colors[index % colors.length];
+              const opacity = Math.max(0.5, ratio);
               
               return (
                 <motion.span
                   key={tag.name}
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.1 * index }}
+                  transition={{ duration: 0.3, delay: 0.02 * index }}
                   className={`
-                    ${sizes[index]} ${colors[index]} ${opacities[index]}
+                    ${sizeClass} ${colorClass}
                     font-bold cursor-default transition-all duration-300
-                    hover:scale-110 hover:opacity-100
+                    hover:scale-110
                   `}
-                  title={`${tag.name}: ${tag.count}`}
+                  style={{ opacity }}
+                  title={`${tag.name}: 出现 ${tag.count} 次`}
                 >
                   {tag.name}
                 </motion.span>
