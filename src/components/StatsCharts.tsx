@@ -51,10 +51,13 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
         });
       });
 
-    return Object.entries(tagCounts)
+    const sorted = Object.entries(tagCounts)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 30) // Show up to 30 tags
-      .map(([name, count]) => ({ name, count }));
+      .slice(0, 50); // Show up to 50 tags
+    
+    // Shuffle for more natural cloud layout
+    const shuffled = [...sorted].sort(() => Math.random() - 0.5);
+    return shuffled.map(([name, count]) => ({ name, count }));
   }, [collections]);
 
   // Calculate max count for sizing
@@ -199,44 +202,54 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
-          className="col-span-full glass glass-border rounded-xl p-6"
+          className="col-span-full glass glass-border rounded-xl p-6 overflow-hidden"
         >
           <h3 className="mb-2 text-lg font-semibold">喜好分析</h3>
           <p className="text-sm text-muted-foreground mb-6">基于评分 7 分及以上动画的热门标签</p>
-          <div className="flex flex-wrap justify-center items-center gap-3 min-h-[150px]">
+          <div className="relative flex flex-wrap justify-center items-center gap-x-4 gap-y-3 min-h-[200px] py-4">
             {tagCloud.map((tag, index) => {
               // Calculate size based on count relative to max
               const ratio = tag.count / maxTagCount;
-              const sizeClass = ratio > 0.8 ? 'text-3xl' : 
-                               ratio > 0.6 ? 'text-2xl' :
-                               ratio > 0.4 ? 'text-xl' :
-                               ratio > 0.25 ? 'text-lg' :
-                               ratio > 0.15 ? 'text-base' : 'text-sm';
+              const fontSize = 0.75 + ratio * 1.75; // 0.75rem to 2.5rem
               
-              // Cycle through colors
+              // Assign colors based on frequency tier
               const colors = [
-                'text-primary',
-                'text-anime-cyan',
-                'text-anime-purple',
-                'text-anime-gold',
-                'text-anime-green',
-                'text-anime-blue',
+                'hsl(var(--primary))',
+                'hsl(var(--anime-cyan))',
+                'hsl(var(--anime-purple))',
+                'hsl(var(--anime-gold))',
+                'hsl(var(--anime-green))',
+                'hsl(var(--anime-blue))',
               ];
-              const colorClass = colors[index % colors.length];
-              const opacity = Math.max(0.5, ratio);
+              const color = colors[index % colors.length];
+              
+              // Random rotation for cloud effect (-15 to 15 degrees)
+              const rotation = (Math.random() - 0.5) * 20;
               
               return (
                 <motion.span
                   key={tag.name}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.02 * index }}
-                  className={`
-                    ${sizeClass} ${colorClass}
-                    font-bold cursor-default transition-all duration-300
-                    hover:scale-110
-                  `}
-                  style={{ opacity }}
+                  initial={{ opacity: 0, scale: 0, rotate: rotation * 2 }}
+                  animate={{ opacity: 1, scale: 1, rotate: rotation }}
+                  transition={{ 
+                    duration: 0.4, 
+                    delay: 0.015 * index,
+                    type: "spring",
+                    stiffness: 200
+                  }}
+                  whileHover={{ 
+                    scale: 1.2, 
+                    rotate: 0,
+                    zIndex: 10,
+                    transition: { duration: 0.2 }
+                  }}
+                  className="cursor-default font-bold transition-colors duration-300 relative"
+                  style={{ 
+                    fontSize: `${fontSize}rem`,
+                    color,
+                    opacity: 0.6 + ratio * 0.4,
+                    textShadow: ratio > 0.5 ? `0 0 20px ${color}40` : 'none',
+                  }}
                   title={`${tag.name}: 出现 ${tag.count} 次`}
                 >
                   {tag.name}
