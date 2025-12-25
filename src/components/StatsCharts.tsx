@@ -205,12 +205,12 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
           className="col-span-full glass glass-border rounded-xl p-6 overflow-hidden"
         >
           <h3 className="mb-2 text-lg font-semibold">喜好分析</h3>
-          <p className="text-sm text-muted-foreground mb-6">基于评分 7 分及以上动画的热门标签</p>
-          <div className="relative flex flex-wrap justify-center items-center gap-x-4 gap-y-3 min-h-[200px] py-4">
+          <p className="text-sm text-muted-foreground mb-4">基于评分 7 分及以上动画的热门标签</p>
+          <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5">
             {tagCloud.map((tag, index) => {
               // Calculate size based on count relative to max
               const ratio = tag.count / maxTagCount;
-              const fontSize = 0.75 + ratio * 1.75; // 0.75rem to 2.5rem
+              const fontSize = 0.7 + ratio * 0.8; // 0.7rem to 1.5rem (smaller range)
               
               // Assign colors based on frequency tier
               const colors = [
@@ -223,32 +223,24 @@ export function StatsCharts({ stats, collections }: StatsChartsProps) {
               ];
               const color = colors[index % colors.length];
               
-              // Random rotation for cloud effect (-15 to 15 degrees)
-              const rotation = (Math.random() - 0.5) * 20;
-              
               return (
                 <motion.span
                   key={tag.name}
-                  initial={{ opacity: 0, scale: 0, rotate: rotation * 2 }}
-                  animate={{ opacity: 1, scale: 1, rotate: rotation }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   transition={{ 
-                    duration: 0.4, 
-                    delay: 0.015 * index,
-                    type: "spring",
-                    stiffness: 200
+                    duration: 0.3, 
+                    delay: 0.01 * index,
                   }}
                   whileHover={{ 
-                    scale: 1.2, 
-                    rotate: 0,
-                    zIndex: 10,
-                    transition: { duration: 0.2 }
+                    scale: 1.15, 
+                    transition: { duration: 0.15 }
                   }}
-                  className="cursor-default font-bold transition-colors duration-300 relative"
+                  className="cursor-default font-medium px-1"
                   style={{ 
                     fontSize: `${fontSize}rem`,
                     color,
-                    opacity: 0.6 + ratio * 0.4,
-                    textShadow: ratio > 0.5 ? `0 0 20px ${color}40` : 'none',
+                    opacity: 0.65 + ratio * 0.35,
                   }}
                   title={`${tag.name}: 出现 ${tag.count} 次`}
                 >
