@@ -46,6 +46,17 @@ export function useTheme() {
     root.style.setProperty('--primary', theme.colors.primary);
     root.style.setProperty('--accent', theme.colors.accent);
     root.style.setProperty('--background', theme.colors.background);
+    root.style.setProperty('--card', theme.colors.card);
+    root.style.setProperty('--muted', theme.colors.muted);
+    root.style.setProperty('--border', theme.colors.border);
+    root.style.setProperty('--ring', theme.colors.ring);
+    root.style.setProperty('--popover', theme.colors.card);
+    root.style.setProperty('--input', theme.colors.muted);
+    root.style.setProperty('--secondary', theme.colors.muted);
+    // Update gradients
+    root.style.setProperty('--gradient-primary', `linear-gradient(135deg, hsl(${theme.colors.primary}) 0%, hsl(${theme.colors.accent}) 100%)`);
+    root.style.setProperty('--shadow-glow', `0 0 30px hsl(${theme.colors.primary} / 0.3)`);
+    root.style.setProperty('--shadow-accent-glow', `0 0 30px hsl(${theme.colors.accent} / 0.3)`);
     setCurrentTheme(theme);
   }, []);
 
