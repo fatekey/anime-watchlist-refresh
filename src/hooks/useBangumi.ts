@@ -46,6 +46,7 @@ export function useTheme() {
     root.style.setProperty('--primary', theme.colors.primary);
     root.style.setProperty('--accent', theme.colors.accent);
     root.style.setProperty('--background', theme.colors.background);
+    root.style.setProperty('--background-alt', theme.colors.backgroundAlt);
     root.style.setProperty('--card', theme.colors.card);
     root.style.setProperty('--muted', theme.colors.muted);
     root.style.setProperty('--border', theme.colors.border);
@@ -53,8 +54,36 @@ export function useTheme() {
     root.style.setProperty('--popover', theme.colors.card);
     root.style.setProperty('--input', theme.colors.muted);
     root.style.setProperty('--secondary', theme.colors.muted);
+    
+    // 背景渐变 - 使用两种背景色
+    root.style.setProperty('--gradient-bg', `linear-gradient(${theme.gradientAngle}deg, hsl(${theme.colors.background}) 0%, hsl(${theme.colors.backgroundAlt}) 50%, hsl(${theme.colors.background}) 100%)`);
+    
+    // 背景纹理
+    let patternStyle = 'none';
+    switch (theme.pattern) {
+      case 'dots':
+        patternStyle = `radial-gradient(circle at 1px 1px, hsl(${theme.colors.primary} / 0.08) 1px, transparent 0)`;
+        root.style.setProperty('--pattern-size', '24px 24px');
+        break;
+      case 'grid':
+        patternStyle = `linear-gradient(hsl(${theme.colors.primary} / 0.05) 1px, transparent 1px), linear-gradient(90deg, hsl(${theme.colors.primary} / 0.05) 1px, transparent 1px)`;
+        root.style.setProperty('--pattern-size', '32px 32px, 32px 32px');
+        break;
+      case 'waves':
+        patternStyle = `repeating-linear-gradient(${theme.gradientAngle + 45}deg, transparent 0px, transparent 20px, hsl(${theme.colors.primary} / 0.03) 20px, hsl(${theme.colors.primary} / 0.03) 21px)`;
+        root.style.setProperty('--pattern-size', 'auto');
+        break;
+      case 'radial':
+        patternStyle = `radial-gradient(ellipse at 30% 20%, hsl(${theme.colors.primary} / 0.12) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, hsl(${theme.colors.accent} / 0.08) 0%, transparent 50%)`;
+        root.style.setProperty('--pattern-size', 'auto');
+        break;
+      default:
+        root.style.setProperty('--pattern-size', 'auto');
+    }
+    root.style.setProperty('--pattern-bg', patternStyle);
+    
     // Update gradients
-    root.style.setProperty('--gradient-primary', `linear-gradient(135deg, hsl(${theme.colors.primary}) 0%, hsl(${theme.colors.accent}) 100%)`);
+    root.style.setProperty('--gradient-primary', `linear-gradient(${theme.gradientAngle}deg, hsl(${theme.colors.primary}) 0%, hsl(${theme.colors.accent}) 100%)`);
     root.style.setProperty('--shadow-glow', `0 0 30px hsl(${theme.colors.primary} / 0.3)`);
     root.style.setProperty('--shadow-accent-glow', `0 0 30px hsl(${theme.colors.accent} / 0.3)`);
     setCurrentTheme(theme);
