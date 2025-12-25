@@ -50,41 +50,67 @@ export function FilterBar({
   ];
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-4">
-      {/* Search */}
-      <div
-        className={cn(
-          'relative flex-1 transition-all duration-300',
-          isSearchFocused ? 'flex-[2]' : 'min-w-[200px] max-w-[300px]'
-        )}
-      >
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder="搜索番剧..."
-          value={searchQuery}
-          onChange={e => onSearchChange(e.target.value)}
-          onFocus={() => setIsSearchFocused(true)}
-          onBlur={() => setIsSearchFocused(false)}
-          className="pl-10 pr-10 transition-all focus:ring-2 focus:ring-primary/50"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => onSearchChange('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
+    <div className="mb-6 space-y-4">
+      {/* Top row: Search + Sort + Count */}
+      <div className="flex items-center gap-2">
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="搜索番剧..."
+            value={searchQuery}
+            onChange={e => onSearchChange(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            onBlur={() => setIsSearchFocused(false)}
+            className="pl-10 pr-10 transition-all focus:ring-2 focus:ring-primary/50"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => onSearchChange('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Sort Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2 shrink-0">
+              <SlidersHorizontal className="h-4 w-4" />
+              <span className="hidden sm:inline">排序</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuLabel>排序方式</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {sortOptions.map(option => (
+              <DropdownMenuItem
+                key={option.value}
+                onClick={() => onSortChange(option.value)}
+                className={cn(sortBy === option.value && 'bg-muted')}
+              >
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Count */}
+        <span className="text-sm text-muted-foreground shrink-0 hidden sm:inline">
+          共 <span className="font-medium text-foreground">{totalCount}</span> 部
+        </span>
       </div>
 
-      {/* Filter Pills */}
-      <div className="flex flex-wrap gap-2">
+      {/* Filter Pills - Scrollable on mobile */}
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible">
         {filterOptions.map(option => (
           <button
             key={option.value ?? 'all'}
             onClick={() => onFilterTypeChange(option.value)}
             className={cn(
-              'rounded-full px-4 py-1.5 text-sm font-medium transition-all',
+              'rounded-full px-4 py-1.5 text-sm font-medium transition-all whitespace-nowrap shrink-0',
               filterType === option.value
                 ? 'bg-primary text-primary-foreground shadow-glow'
                 : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
@@ -93,35 +119,11 @@ export function FilterBar({
             {option.label}
           </button>
         ))}
+        {/* Mobile count */}
+        <span className="text-sm text-muted-foreground shrink-0 flex items-center sm:hidden">
+          共 <span className="font-medium text-foreground mx-1">{totalCount}</span> 部
+        </span>
       </div>
-
-      {/* Sort Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
-            <SlidersHorizontal className="h-4 w-4" />
-            排序
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuLabel>排序方式</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {sortOptions.map(option => (
-            <DropdownMenuItem
-              key={option.value}
-              onClick={() => onSortChange(option.value)}
-              className={cn(sortBy === option.value && 'bg-muted')}
-            >
-              {option.label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {/* Count */}
-      <span className="text-sm text-muted-foreground">
-        共 <span className="font-medium text-foreground">{totalCount}</span> 部
-      </span>
     </div>
   );
 }

@@ -42,16 +42,16 @@ const Index = () => {
 
       {/* Header */}
       <header className="relative z-10 border-b border-border/50 bg-background/50 backdrop-blur-xl">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 shadow-glow">
-              <Tv2 className="h-5 w-5 text-primary-foreground" />
+        <div className="container flex h-14 sm:h-16 items-center justify-between px-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 shadow-glow">
+              <Tv2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight">
+              <h1 className="text-base sm:text-lg font-bold tracking-tight">
                 Bangumi <span className="text-gradient">Tracker</span>
               </h1>
-              <p className="text-xs text-muted-foreground">追踪你的番剧世界</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">追踪你的番剧世界</p>
             </div>
           </div>
 
@@ -83,7 +83,7 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container relative z-10 py-8">
+      <main className="container relative z-10 py-4 sm:py-8 px-4">
         <AnimatePresence mode="wait">
           {!userId ? (
             <motion.div
@@ -100,10 +100,10 @@ const Index = () => {
                 transition={{ delay: 0.1 }}
                 className="mb-12 text-center"
               >
-                <h2 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+                <h2 className="mb-4 text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                   展示你的 <span className="text-gradient">追番记录</span>
                 </h2>
-                <p className="mx-auto max-w-xl text-lg text-muted-foreground">
+                <p className="mx-auto max-w-xl text-sm sm:text-lg text-muted-foreground px-4">
                   输入你的 Bangumi 用户 ID，即刻生成精美的番剧统计图表和收藏展示
                 </p>
               </motion.div>
@@ -115,7 +115,7 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="mt-16 grid gap-6 sm:grid-cols-3"
+                className="mt-8 sm:mt-16 grid grid-cols-3 gap-3 sm:gap-6"
               >
                 {[
                   { icon: '📊', title: '数据可视化', desc: '精美的统计图表' },
@@ -124,11 +124,11 @@ const Index = () => {
                 ].map((feature, i) => (
                   <div
                     key={i}
-                    className="glass glass-border rounded-xl p-6 text-center transition-transform hover:scale-105"
+                    className="glass glass-border rounded-xl p-3 sm:p-6 text-center transition-transform hover:scale-105"
                   >
-                    <span className="mb-3 block text-4xl">{feature.icon}</span>
-                    <h3 className="mb-1 font-semibold">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                    <span className="mb-2 sm:mb-3 block text-2xl sm:text-4xl">{feature.icon}</span>
+                    <h3 className="mb-1 text-xs sm:text-base font-semibold">{feature.title}</h3>
+                    <p className="text-[10px] sm:text-sm text-muted-foreground hidden sm:block">{feature.desc}</p>
                   </div>
                 ))}
               </motion.div>
@@ -186,14 +186,14 @@ const Index = () => {
 
               {/* Content Tabs */}
               {!isLoading && !error && (
-                <Tabs defaultValue="collection" className="space-y-6">
+                <Tabs defaultValue="collection" className="space-y-4 sm:space-y-6">
                   <TabsList className="grid w-full max-w-md grid-cols-2 bg-muted/50">
-                    <TabsTrigger value="collection" className="gap-2">
-                      <Tv2 className="h-4 w-4" />
+                    <TabsTrigger value="collection" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                      <Tv2 className="h-3 w-3 sm:h-4 sm:w-4" />
                       收藏列表
                     </TabsTrigger>
-                    <TabsTrigger value="stats" className="gap-2">
-                      <BarChart3 className="h-4 w-4" />
+                    <TabsTrigger value="stats" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                      <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
                       数据统计
                     </TabsTrigger>
                   </TabsList>
