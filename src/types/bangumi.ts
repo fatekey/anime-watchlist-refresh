@@ -89,11 +89,14 @@ export interface Theme {
     primary: string;
     accent: string;
     background: string;
+    backgroundAlt: string;  // 第二背景色，用于渐变
     card: string;
     muted: string;
     border: string;
     ring: string;
   };
+  gradientAngle: number;  // 背景渐变角度
+  pattern?: 'none' | 'dots' | 'grid' | 'waves' | 'radial';  // 背景纹理
 }
 
 export const themes: Theme[] = [
@@ -103,12 +106,15 @@ export const themes: Theme[] = [
     colors: {
       primary: '340 70% 55%',
       accent: '185 80% 50%',
-      background: '270 20% 8%',
-      card: '270 15% 12%',
-      muted: '270 15% 18%',
-      border: '270 15% 20%',
+      background: '320 25% 6%',
+      backgroundAlt: '280 30% 12%',
+      card: '310 20% 12%',
+      muted: '300 15% 18%',
+      border: '320 20% 22%',
       ring: '340 70% 55%',
     },
+    gradientAngle: 135,
+    pattern: 'radial',
   },
   {
     id: 'ocean',
@@ -116,12 +122,15 @@ export const themes: Theme[] = [
     colors: {
       primary: '200 90% 50%',
       accent: '170 80% 45%',
-      background: '210 40% 6%',
-      card: '210 35% 10%',
-      muted: '210 30% 16%',
-      border: '210 25% 20%',
+      background: '210 50% 4%',
+      backgroundAlt: '195 45% 10%',
+      card: '205 40% 10%',
+      muted: '200 35% 16%',
+      border: '200 30% 20%',
       ring: '200 90% 50%',
     },
+    gradientAngle: 180,
+    pattern: 'waves',
   },
   {
     id: 'sunset',
@@ -129,12 +138,15 @@ export const themes: Theme[] = [
     colors: {
       primary: '20 95% 55%',
       accent: '45 100% 50%',
-      background: '10 30% 6%',
-      card: '10 25% 10%',
-      muted: '10 20% 16%',
-      border: '10 20% 22%',
+      background: '5 35% 5%',
+      backgroundAlt: '25 40% 12%',
+      card: '15 30% 10%',
+      muted: '20 25% 16%',
+      border: '25 25% 22%',
       ring: '20 95% 55%',
     },
+    gradientAngle: 45,
+    pattern: 'dots',
   },
   {
     id: 'forest',
@@ -142,12 +154,15 @@ export const themes: Theme[] = [
     colors: {
       primary: '140 70% 40%',
       accent: '80 60% 45%',
-      background: '150 25% 5%',
-      card: '150 20% 9%',
-      muted: '150 15% 15%',
-      border: '150 15% 18%',
+      background: '160 35% 4%',
+      backgroundAlt: '130 30% 10%',
+      card: '150 25% 9%',
+      muted: '145 20% 15%',
+      border: '140 20% 18%',
       ring: '140 70% 40%',
     },
+    gradientAngle: 160,
+    pattern: 'grid',
   },
   {
     id: 'midnight',
@@ -155,11 +170,14 @@ export const themes: Theme[] = [
     colors: {
       primary: '260 85% 65%',
       accent: '290 70% 55%',
-      background: '250 30% 6%',
-      card: '250 25% 10%',
-      muted: '250 20% 16%',
-      border: '250 20% 20%',
+      background: '250 40% 4%',
+      backgroundAlt: '270 35% 10%',
+      card: '255 30% 10%',
+      muted: '260 25% 16%',
+      border: '265 25% 20%',
       ring: '260 85% 65%',
     },
+    gradientAngle: 225,
+    pattern: 'none',
   },
 ];
