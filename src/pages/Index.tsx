@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Tv2, BarChart3, RefreshCw, Github, AlertCircle } from 'lucide-react';
+import { Tv2, BarChart3, RefreshCw, Github, AlertCircle, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,6 +11,7 @@ import { StatsCharts } from '@/components/StatsCharts';
 import { FilterBar } from '@/components/FilterBar';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { AnimeDetailModal } from '@/components/AnimeDetailModal';
+import { TimelineView } from '@/components/TimelineView';
 import { UserCollection } from '@/types/bangumi';
 import defaultAvatar from '@/assets/default-avatar.png';
 
@@ -187,10 +188,14 @@ const Index = () => {
               {/* Content Tabs */}
               {!isLoading && !error && (
                 <Tabs defaultValue="collection" className="space-y-6">
-                  <TabsList className="grid w-full max-w-md grid-cols-2 bg-muted/50">
+                  <TabsList className="grid w-full max-w-2xl grid-cols-3 bg-muted/50">
                     <TabsTrigger value="collection" className="gap-2">
                       <Tv2 className="h-4 w-4" />
                       收藏列表
+                    </TabsTrigger>
+                    <TabsTrigger value="timeline" className="gap-2">
+                      <Clock className="h-4 w-4" />
+                      时间线
                     </TabsTrigger>
                     <TabsTrigger value="stats" className="gap-2">
                       <BarChart3 className="h-4 w-4" />
@@ -210,6 +215,13 @@ const Index = () => {
                     />
                     <AnimeGrid
                       collections={filteredCollections}
+                      onCardClick={setSelectedCollection}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="timeline">
+                    <TimelineView
+                      collections={collections}
                       onCardClick={setSelectedCollection}
                     />
                   </TabsContent>
